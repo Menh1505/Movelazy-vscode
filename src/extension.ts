@@ -4,7 +4,7 @@ import { MoveSimulatorViewProvider } from './MoveSimulatorViewProvider';
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "move-simulator-vscode" is now active!');
 
-	const provider = new MoveSimulatorViewProvider(context.extensionUri);
+	const provider = new MoveSimulatorViewProvider(context);
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(MoveSimulatorViewProvider.viewType, provider)
