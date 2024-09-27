@@ -2,19 +2,24 @@
 
 This is the README for your extension "move-simulator-vscode". After writing up a brief description, we recommend including the following sections.
 
+## Installing
+
+```bash
+npm run install:all
+```
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+To run the extension, press F5 and select the `Run Extension` option.
+- Run command (`Shift+Cmd+P` on macOS or `Shift+Ctrl+P` on Windows and Linux):
+    - open simulator
+    - open webview
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+To compile the extension, open terminal and type the command `npm run compile`.
+To build the webview UI, open terminal and type the command `cd webview && npm run build`.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- [Node.js](https://nodejs.org/en/download/package-manager)
 
 ## Extension Settings
 

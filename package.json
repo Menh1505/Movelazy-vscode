@@ -46,6 +46,7 @@
     }
   },
   "scripts": {
+    "install:all": "npm install && cd webview && npm install && npm install vite",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
