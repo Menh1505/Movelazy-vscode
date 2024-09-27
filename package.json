@@ -1,6 +1,8 @@
 {
   "name": "move-simulator-vscode",
   "displayName": "move-simulator-vscode",
+  "icon": "media/icon.png",
+  "publisher": "Movelazy",
   "description": "move with GUI",
   "version": "0.0.1",
   "engines": {
@@ -16,9 +18,13 @@
       {
         "command": "move-simulator-vscode.openSimulator",
         "title": "open simulator"
+      },
+      {
+        "command": "move-simulator-vscode.openWebview",
+        "title": "open webview"
       }
     ],
-    "viewsContainers": {
+   "viewsContainers": {
       "activitybar": [
         {
           "id": "move-simulator",
@@ -30,8 +36,11 @@
     "views": {
       "move-simulator": [
         {
+          "type": "webview",
           "id": "moveSimulatorView",
-          "name": "Move Simulator"
+          "name": "Move Simulator",
+          "icon": "media/logo.svg",
+          "contextualTitle": "Move Simulator"
         }
       ]
     }
