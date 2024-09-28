@@ -24,7 +24,7 @@
         "title": "open webview"
       }
     ],
-   "viewsContainers": {
+    "viewsContainers": {
       "activitybar": [
         {
           "id": "move-simulator",
@@ -63,5 +63,9 @@
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.9.1",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "move-simulator-vscode": "file:",
+    "react-router-dom": "^6.26.2"
   }
 }
