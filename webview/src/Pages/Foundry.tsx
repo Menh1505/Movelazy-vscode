@@ -5,14 +5,24 @@ import NetworkSelect from '../components/NetworkSelect';
 import DeployButton from '../components/DeployButton';
 import PageHeader from '../components/PageHeader';
 
-const DeploySolidityPage = () => {
-  const [file, setFile] = useState(null);
-  const [walletAddress, setWalletAddress] = useState('');
-  const [privateKey, setPrivateKey] = useState('');
-  const [network, setNetwork] = useState('solidity-testnet');
+interface FoundryProps {
+  setCurrentPage: (page: string) => void; // Accepts any string
+}
 
-  const handleSubmit = async (e) => {
+const Foundry: React.FC<FoundryProps> = ({ setCurrentPage }) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [privateKey, setPrivateKey] = useState<string>('');
+  const [network, setNetwork] = useState<string>('foundry-testnet');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!file) {
+      alert('Please upload a file.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('walletAddress', walletAddress);
@@ -20,7 +30,7 @@ const DeploySolidityPage = () => {
     formData.append('network', network);
 
     try {
-      const response = await fetch('http://localhost:5000/deploySolidity', {
+      const response = await fetch('http://localhost:5000/deployFoundry', {
         method: 'POST',
         body: formData,
       });
@@ -34,15 +44,20 @@ const DeploySolidityPage = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <PageHeader title="Deploy Solidity Contract" />
+      <PageHeader title="Deploy Foundry Contract" setCurrentPage={setCurrentPage} />
       <form onSubmit={handleSubmit}>
         <FileUpload file={file} setFile={setFile} />
-        <WalletInput walletAddress={walletAddress} setWalletAddress={setWalletAddress} privateKey={privateKey} setPrivateKey={setPrivateKey} />
+        <WalletInput
+          walletAddress={walletAddress}
+          setWalletAddress={setWalletAddress}
+          privateKey={privateKey}
+          setPrivateKey={setPrivateKey}
+        />
         <NetworkSelect network={network} setNetwork={setNetwork} />
-        <DeployButton handleSubmit={handleSubmit} />
+        <DeployButton handleSubmit={(e) => { e.preventDefault(); handleSubmit(e as any); }} />
       </form>
     </div>
   );
 };
 
-export default DeploySolidityPage;
+export default Foundry;

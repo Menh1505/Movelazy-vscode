@@ -1,11 +1,11 @@
-import './App.css'
+import './App.css';
 import Aptos from './Pages/Aptos';
 import Foundry from './Pages/Foundry';
 import { Logo } from "./components/Logo";
 import { useState } from 'react';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'Aptos' | 'Foundry' | null>(null);
+  const [currentPage, setCurrentPage] = useState<string | null>(null); // Keep this generic
 
   const togglePage = () => {
     setCurrentPage(currentPage === 'Aptos' ? 'Foundry' : 'Aptos');
@@ -14,9 +14,9 @@ function App() {
   const renderContent = () => {
     switch (currentPage) {
       case 'Aptos':
-        return <Aptos onSwitch={togglePage} />;
+        return <Aptos setCurrentPage={setCurrentPage} />;
       case 'Foundry':
-        return <Foundry onSwitch={togglePage} />;
+        return <Foundry setCurrentPage={setCurrentPage} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full">
@@ -60,7 +60,7 @@ function App() {
         {renderContent()}
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

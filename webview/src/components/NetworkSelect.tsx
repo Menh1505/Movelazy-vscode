@@ -23,13 +23,18 @@ const MOVEMENT_NETWORKS = {
       value: "solidity-testnet",
       description: "Compatible with Foundry and Hardhat",
       rpcUrl: "https://mevm.devnet.imola.movementlabs.xyz",
-      explorer: "	https://explorer.devnet.imola.movementlabs.xyz",
-      faucet: "	https://faucet.movementlabs.xyz/?network=mevm"
+      explorer: "https://explorer.devnet.imola.movementlabs.xyz",
+      faucet: "https://faucet.movementlabs.xyz/?network=mevm"
     }
   ]
 };
 
-const NetworkSelect = ({ network, setNetwork }) => {
+interface NetworkSelectProps {
+  network: string;
+  setNetwork: (network: string) => void;
+}
+
+const NetworkSelect: React.FC<NetworkSelectProps> = ({ network, setNetwork }) => {
   return (
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="network">

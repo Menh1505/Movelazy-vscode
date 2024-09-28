@@ -1,6 +1,12 @@
 import React from 'react';
 
-const PageHeader = ({ title, className = '', setCurrentPage }) => {
+interface PageHeaderProps {
+  title: string;
+  className?: string; // className is optional
+  setCurrentPage: (page: any) => void; // you may want to replace `any` with a more specific type
+}
+
+const PageHeader: React.FC<PageHeaderProps> = ({ title, className = '', setCurrentPage }) => {
   const handleGoHome = () => {
     setCurrentPage(null);
   };
