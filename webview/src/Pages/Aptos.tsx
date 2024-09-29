@@ -4,6 +4,7 @@ import WalletInput from '../components/WalletInput';
 import NetworkSelect from '../components/NetworkSelect';
 import DeployButton from '../components/DeployButton';
 import PageHeader from '../components/PageHeader';
+import AptosLogo from '../assets/aptos-black.svg';
 
 interface AptosProps {
   setCurrentPage: (page: string) => void; // Accepts any string
@@ -43,8 +44,16 @@ const Aptos: React.FC<AptosProps> = ({ setCurrentPage }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <PageHeader title="Deploy Aptos Contract" setCurrentPage={setCurrentPage} />
+    <div className="max-w-xl mx-auto mt-10 p-6 h-96">
+      <PageHeader
+        title={
+          <div className="flex items-center">
+            <img src={AptosLogo} alt="Aptos Logo" className="w-10 h-10 mr-2" />
+            Deploy Aptos Contract
+          </div>
+        }
+        setCurrentPage={setCurrentPage}
+      />
       <form onSubmit={handleSubmit}>
         <FileUpload file={file} setFile={setFile} />
         <WalletInput
@@ -53,7 +62,7 @@ const Aptos: React.FC<AptosProps> = ({ setCurrentPage }) => {
           privateKey={privateKey}
           setPrivateKey={setPrivateKey}
         />
-        <NetworkSelect network={network} setNetwork={setNetwork} />
+        <NetworkSelect network={network} setNetwork={setNetwork} currentPage="Aptos" />
         <DeployButton handleSubmit={(e) => { e.preventDefault(); handleSubmit(e as any); }} />
       </form>
     </div>

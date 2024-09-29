@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface PageHeaderProps {
-  title: string;
+  title: React.ReactNode;
   className?: string; // className is optional
   setCurrentPage: (page: any) => void; // you may want to replace `any` with a more specific type
 }
