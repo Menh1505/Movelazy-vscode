@@ -22,7 +22,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ file, setFile }) => {
       <input
         type="file"
         id="file"
-        className="w-full py-2 px-3 border rounded"
+        className="w-full py-2 px-3 border border-gray-600 rounded-lg bg-gray-800 text-gray-300 focus:outline-none focus:ring focus:ring-blue-500 transition duration-200"
         onChange={handleFileChange}
         accept=".sol,.move"
         required
