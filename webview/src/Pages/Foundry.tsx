@@ -5,6 +5,8 @@ import { Tab } from '../components/Tab';
 import { CoinIcon } from '../icons/CoinIcon';
 import { AptosIcon } from '../icons/AptosIcon';
 import { FoundryIcon } from '../icons/FoundryIcon';
+import { WalletIcon } from '../icons/WalletIcon';
+import { MoveIcon } from '../icons/MoveIcon';
 
 const Aptos: React.FC = () => {
 
@@ -51,6 +53,30 @@ const Aptos: React.FC = () => {
                   <Tab
                     icon={<AptosIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Deploy"
+                  />
+                </Link>
+              </button>
+              <button
+                className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
+              >
+                <Link to="/faucets" className="focus:outline-none"
+                  state={{  page: 'aptos' }}
+                >
+                  <Tab
+                    icon={<MoveIcon className="!relative !w-[24px] !h-[24px]" />}
+                    title="faucets"
+                  />
+                </Link>
+              </button>
+              <button
+                className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
+              >
+                <Link to="/your-address" className="focus:outline-none"
+                  state={{  page: 'aptos' }}
+                >
+                  <Tab
+                    icon={<WalletIcon className="!relative !w-[24px] !h-[24px]" />}
+                    title="YourAddress"
                   />
                 </Link>
               </button>
