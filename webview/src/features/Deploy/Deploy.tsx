@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AptosIcon } from "../../icons/AptosIcon";
 import { FoundryIcon } from "../../icons/FoundryIcon";
 import FileUpload from "../../components/FileUpload";
+import { OrbitProgress } from "react-loading-indicators";
 
 const Deploy = () => {
     //@ts-ignore
@@ -17,9 +18,14 @@ const Deploy = () => {
     const [accountError, setAccountError] = useState('');
     const [keyError, setKeyError] = useState('');
 
-    const [file, setFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false); // For button loading state
+    const [apiError, setApiError] = useState('');  // To show any API errors
 
-    const [selectedNetwork, setSelectedNetwork] = useState<string>('testnet');
+    const [file, setFile] = useState<File | null>(null);
+    //@ts-ignore
+    const [modName, setModName] = useState('');
+
+    const [selectedNetwork, setSelectedNetwork] = useState<string>('https://aptos.testnet.suzuka.movementlabs.xyz/v1');
 
     const location = useLocation();
     const page = location.state?.page;
@@ -29,7 +35,7 @@ const Deploy = () => {
 
     const getBaseUrl = () => {
         if (page === 'aptos') {
-            return selectedNetwork === 'testnet'
+            return selectedNetwork === 'https://aptos.testnet.suzuka.movementlabs.xyz/v1'
                 ? 'https://aptos.testnet.suzuka.movementlabs.xyz/v1'
                 : 'https://devnet.suzuka.movementnetwork.xyz/v1'; // URL cho mạng devnet
         } else if (page === 'foundry') {
@@ -108,23 +114,48 @@ const Deploy = () => {
         }
     };
 
+    const handleModName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setModName(e.target.value);
+    }
+
     const handleDeploy = async () => {
-        // Validate inputs (wallet address, account, key, and file)
-        if (!file || !wallet || !accAddr || !privatekey) {
-            alert('Please fill out all required fields.');
-            return;
-        }
+        setLoading(true);
+        setApiError('');
 
         try {
-            // Example logic for deployment (you can replace this with your real deployment logic)
-            const baseUrl = getBaseUrl();
-            console.log("Deploying to:", baseUrl);
-            console.log("Contract file:", file);
-            // Call your deployment API here with the required parameters
-            alert('Contract deployed successfully!');
+            const formData = new FormData();
+            if (file) {
+                formData.append('file', file);
+            } else {
+                throw new Error('No file selected for upload');
+            }
+            formData.append('privateKey', privatekey);
+            formData.append('rpcUrl', selectedNetwork);
+
+            if (file) {
+                formData.append('file', file);
+            }
+
+            const response = await fetch(`${baseUrl}/deploy`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Deployment failed');
+            }
+
+            const data = await response.json();
+            console.log("Deployment successful:", data);
         } catch (error) {
-            console.error('Error deploying contract:', error);
-            alert('Failed to deploy contract. Please try again.');
+            console.error('Error during deployment:', error);
+            if (error instanceof Error) {
+                setApiError(error.message || 'Failed to deploy');
+            } else {
+                setApiError('An unknown error occurred');
+            }
+        } finally {
+            setLoading(false);
         }
     };
     const navigate = useNavigate();
@@ -148,7 +179,7 @@ const Deploy = () => {
                         </div>
                         <div className="flex flex-col gap-[24px] my-5 w-full ">
                             <div>
-                                <FileUpload file={file} setFile={setFile} />
+                                <FileUpload file={file} setFile={setFile} page={page} />
                             </div>
                             <div>
                                 <label
@@ -162,6 +193,16 @@ const Deploy = () => {
                                     maxLength={66}
                                 />
                                 {walletError && <p className="text-red-500">{walletError}</p>}
+                            </div>
+                            <div>
+                                <label
+                                    className=" block text-white text-xl font-semibold mb-2 text-gray-700"
+                                >Module Name</label>
+                                <input
+                                    className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
+                                    type="text"
+                                    onChange={handleModName}
+                                />
                             </div>
                             <div>
                                 <label
@@ -230,9 +271,14 @@ const Deploy = () => {
                                 )}
                             </div>
                             <div className="mt-5">
-                                <button onClick={handleDeploy} className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">
-                                    Deploy Contract
+                                <button
+                                    className={`w-full px-5 py-4 mt-4 text-white text-[18px] rounded-lg ${loading ? 'bg-gray-500' : 'bg-blue-500'} `}
+                                    onClick={handleDeploy}
+                                    disabled={loading}>
+                                    {loading ? <OrbitProgress color="#7d9cd9" size="small" text="" textColor="" /> : 'Deploy'}
                                 </button>
+
+                                {apiError && <p className="text-red-500 mt-2">{apiError}</p>}
                             </div>
                         </div>
                     </div>

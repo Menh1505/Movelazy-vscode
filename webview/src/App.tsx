@@ -72,7 +72,6 @@ function App() {
             className="mt-2 sm:mt-0 sm:ml-auto px-3 py-1 bg-[#ffffff1a] rounded hover:bg-[#ffffff33] transition-colors"
             onClick={togglePage}
           >
-            Switch to {currentPage === 'aptos' ? 'foundry' : 'aptos'}
           </button>
         )}
       </header>
