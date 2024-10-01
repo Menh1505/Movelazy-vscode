@@ -1,16 +1,16 @@
 import React from 'react';
-//@ts-ignore
-import WalletInformation from '../components/WalletInformation';
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from '../icons/ArrowLeft';
 import { Tab } from '../components/Tab';
-import { FoundryIcon } from '../icons/FoundryIcon';
 import { CoinIcon } from '../icons/CoinIcon';
+import { AptosIcon } from '../icons/AptosIcon';
+import { FoundryIcon } from '../icons/FoundryIcon';
 
-const Foundry: React.FC = () => {
+const Aptos: React.FC = () => {
+
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/");
+    navigate(`/`);
   };
   return (
     <div className="h-[200vh] grow overflow-y-scroll">
@@ -21,18 +21,21 @@ const Foundry: React.FC = () => {
               className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
               onClick={handleNavigate}>
               <ArrowLeft className="!relative !w-[24px] !h-[24px]" />
-              <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
+              <FoundryIcon className="!relative !w-[50px] !h-[50px] bg-white rounded-xl " />
+              <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[30px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
                 Solidity
               </div>
             </div>
           </div>
           <div className="flex flex-col items-center justify-center h-full w-full">
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4  w-full">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full">
               <button
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
 
               >
-                <Link to="/foundry" className="focus:outline-none">
+                <Link to="/account-balance" className="focus:outline-none"
+                  state={{ page: 'foundry' }}
+                >
                   <Tab
                     icon={<CoinIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Account Balance"
@@ -42,9 +45,11 @@ const Foundry: React.FC = () => {
               <button
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
               >
-                <Link to="/deploy" className="focus:outline-none">
+                <Link to="/deploy" className="focus:outline-none"
+                  state={{ page: 'foundry' }}
+                >
                   <Tab
-                    icon={<FoundryIcon className="!relative !w-[24px] !h-[24px]" />}
+                    icon={<AptosIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Deploy"
                   />
                 </Link>
@@ -54,7 +59,8 @@ const Foundry: React.FC = () => {
         </div>
       </div>
     </div>
+
   );
 };
 
-export default Foundry;
+export default Aptos;

@@ -2,6 +2,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useState } from "react";
+import { AptosIcon } from "../../icons/AptosIcon";
+import { FoundryIcon } from "../../icons/FoundryIcon";
+import FileUpload from "../../components/FileUpload";
 
 const Deploy = () => {
     //@ts-ignore
@@ -13,6 +16,8 @@ const Deploy = () => {
     const [walletError, setWalletError] = useState('');
     const [accountError, setAccountError] = useState('');
     const [keyError, setKeyError] = useState('');
+
+    const [file, setFile] = useState<File | null>(null);
 
     const [selectedNetwork, setSelectedNetwork] = useState<string>('testnet');
 
@@ -116,11 +121,15 @@ const Deploy = () => {
                             className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
                             onClick={handleNavigate}>
                             <ArrowLeft className="!relative !w-[24px] !h-[24px]" />
+                            {page === 'aptos' ? <AptosIcon className="!relative !w-[24px] !h-[24px] bg-white rounded-xl" /> : <FoundryIcon className="!relative !w-[24px] !h-[24px] bg-white rounded-xl" />}
                             <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
-                                Deploy
+                                Deploy {page}
                             </div>
                         </div>
                         <div className="flex flex-col gap-[24px] my-5 w-full ">
+                            <div>
+                                <FileUpload file={file} setFile={setFile} />
+                            </div>
                             <div>
                                 <label
                                     className=" block text-white text-xl font-semibold mb-2 text-gray-700"

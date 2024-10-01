@@ -2,6 +2,8 @@
 import { Link, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useState } from "react";
+import { AptosIcon } from "../../icons/AptosIcon";
+import { FoundryIcon } from "../../icons/FoundryIcon";
 
 const AccountBalance = () => {
     const [selectedCoin, setSelectedCoin] = useState('');
@@ -39,8 +41,9 @@ const AccountBalance = () => {
                             className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
                             onClick={handleNavigate}>
                             <ArrowLeft className="!relative !w-[24px] !h-[24px]" />
+                            {page === 'aptos' ? <AptosIcon className="!relative !w-[24px] !h-[24px] bg-white rounded-xl" /> : <FoundryIcon className="!relative !w-[24px] !h-[24px] bg-white rounded-xl" />}
                             <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
-                                Account Balance
+                                Account Balance {page}
                             </div>
                         </div>
 
