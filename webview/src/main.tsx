@@ -8,6 +8,8 @@ import Aptos from './Pages/Aptos';
 import Foundry from './Pages/Foundry';
 import AccountBalance from './features/AccountBalance';
 import Deploy from './features/Deploy/Deploy';
+import Faucets from './features/Faucets/Faucets';
+import YourAddress from './features/YourAddress/YourAddress';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -26,6 +28,8 @@ if (root) {
           <Route path="foundry" element={<Foundry />} />
           <Route path="account-balance" element={<AccountBalance />} />
           <Route path="deploy" element={<Deploy />} />
+          <Route path="faucets" element={<Faucets />} />
+          <Route path="your-address" element={<YourAddress />} />
         </Route>
       </Routes>
     </MemoryRouter>
