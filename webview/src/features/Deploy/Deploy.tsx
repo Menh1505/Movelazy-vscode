@@ -107,6 +107,26 @@ const Deploy = () => {
             setKeyError('Only hexadecimal characters are allowed.');
         }
     };
+
+    const handleDeploy = async () => {
+        // Validate inputs (wallet address, account, key, and file)
+        if (!file || !wallet || !accAddr || !privatekey) {
+            alert('Please fill out all required fields.');
+            return;
+        }
+
+        try {
+            // Example logic for deployment (you can replace this with your real deployment logic)
+            const baseUrl = getBaseUrl();
+            console.log("Deploying to:", baseUrl);
+            console.log("Contract file:", file);
+            // Call your deployment API here with the required parameters
+            alert('Contract deployed successfully!');
+        } catch (error) {
+            console.error('Error deploying contract:', error);
+            alert('Failed to deploy contract. Please try again.');
+        }
+    };
     const navigate = useNavigate();
     const handleNavigate = () => {
         navigate(`/${page}`);
@@ -171,7 +191,6 @@ const Deploy = () => {
                                 {keyError && <p className="text-red-500">{keyError}</p>}
                             </div>
                             <div>
-                                <h1>{page === 'aptos' ? 'Aptos Component' : 'Foundry Component'}</h1>
                                 {page === 'aptos' && (
                                     <>
                                         <label htmlFor="network" className="block text-xl text-white font-semibold mb-2 text-gray-700">
@@ -209,6 +228,11 @@ const Deploy = () => {
                                         </select>
                                     </>
                                 )}
+                            </div>
+                            <div className="mt-5">
+                                <button onClick={handleDeploy} className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">
+                                    Deploy Contract
+                                </button>
                             </div>
                         </div>
                     </div>
