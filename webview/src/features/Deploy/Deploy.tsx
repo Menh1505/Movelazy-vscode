@@ -1,62 +1,110 @@
 
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useState } from "react";
 
 const Deploy = () => {
     //@ts-ignore
-    const [isValid, setIsValid] = useState<boolean>(true);
-    //@ts-ignore
     const [accAddr, setAccAddr] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    //@ts-ignore
+    const [wallet, setWallet] = useState('');
+    //@ts-ignore
+    const [privatekey, setPrivateKey] = useState('');
+    const [walletError, setWalletError] = useState('');
+    const [accountError, setAccountError] = useState('');
+    const [keyError, setKeyError] = useState('');
+
     const [selectedNetwork, setSelectedNetwork] = useState<string>('testnet');
 
-    const { currentPage } = useOutletContext<{ currentPage: string }>();
+    const location = useLocation();
+    const page = location.state?.page;
     const handleNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedNetwork(e.target.value);
     };
 
     const getBaseUrl = () => {
-        if (currentPage === 'aptos') {
+        if (page === 'aptos') {
             return selectedNetwork === 'testnet'
                 ? 'https://aptos.testnet.suzuka.movementlabs.xyz/v1'
                 : 'https://devnet.suzuka.movementnetwork.xyz/v1'; // URL cho mạng devnet
-        } else if (currentPage === 'foundry') {
+        } else if (page === 'foundry') {
             return 'https://mevm.devnet.imola.movementlabs.xyz'; // URL cho Foundry
         }
         return ''; // Trả về chuỗi rỗng nếu không tìm thấy
     };
-
+    //@ts-ignore
     const baseUrl = getBaseUrl();
     //@ts-ignore
     const [number, setNumber] = useState<number | string>('');
 
     const handleAccount = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setErrorMessage('');
+        setAccountError('');
         if ((value.length === 2 && value === '0x') ||
             (value.startsWith('0x') && /^[0-9a-fA-F]*$/.test(value.slice(2)) && value.length <= 66)) {
-            setAccAddr(value);
-            setErrorMessage('');
+            setAccAddr(e.target.value);
+            setAccountError('');
         } else {
-            if (value.length === 66) {
-                setErrorMessage('Input must be exactly 66 characters long');
-            } else if (!value.startsWith('0x') && value.length > 0) {
-                setErrorMessage('Input must start with "0x".');
-            } else {
-                setErrorMessage('Only hexadecimal characters are allowed.');
+            if (!value.startsWith('0x') && value.length > 0) {
+                setWalletError('Input must start with "0x".');
+            } else if (value.length !== 66) {
+                setWalletError('Input must be exactly 66 characters long');
             }
         }
     }
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (!/^[0-9a-fA-F]*$/.test(e.key) && e.key !== 'x' && e.key !== '0') {
+    const handlePressAccount = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!/^[0-9a-wy-zA-WY-Z]*$/.test(e.key)) {
             e.preventDefault();
-            setErrorMessage('Only hexadecimal characters are allowed.');
+            setAccountError('Only hexadecimal characters are allowed.');
+        }
+    };
+
+    const handleWallet = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setWalletError('');
+        if ((value.length === 2 && value === '0x') ||
+            (value.startsWith('0x') && /^[0-9a-fA-F]*$/.test(value.slice(2)) && value.length <= 66)) {
+            setWallet(e.target.value);
+            setWalletError('');
+        } else {
+            if (!value.startsWith('0x') && value.length > 0) {
+                setWalletError('Input must start with "0x".');
+            } else if (value.length !== 66) {
+                setWalletError('Input must be exactly 66 characters long');
+            }
+        }
+    }
+    const handlePressWallet = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!/^[0-9a-wy-zA-WY-Z]*$/.test(e.key)) {
+            e.preventDefault();
+            setWalletError('Only hexadecimal characters are allowed.');
+        }
+    };
+
+    const handleKey = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setKeyError('');
+        if ((value.length === 2 && value === '0x') ||
+            (value.startsWith('0x') && /^[0-9a-fA-F]*$/.test(value.slice(2)) && value.length <= 66)) {
+            setPrivateKey(e.target.value);
+            setKeyError('');
+        } else {
+            if (!value.startsWith('0x') && value.length > 0) {
+                setWalletError('Input must start with "0x".');
+            } else if (value.length !== 66) {
+                setWalletError('Input must be exactly 66 characters long');
+            }
+        }
+    }
+    const handlePressKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!/^[0-9a-wy-zA-WY-Z]*$/.test(e.key)) {
+            e.preventDefault();
+            setKeyError('Only hexadecimal characters are allowed.');
         }
     };
     const navigate = useNavigate();
     const handleNavigate = () => {
-        navigate(`/${currentPage}`);
+        navigate(`/${page}`);
     };
 
     return (
@@ -76,14 +124,28 @@ const Deploy = () => {
                             <div>
                                 <label
                                     className=" block text-white text-xl font-semibold mb-2 text-gray-700"
+                                >Wallet Address</label>
+                                <input
+                                    className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
+                                    type="text"
+                                    onChange={handleWallet}
+                                    onKeyPress={handlePressWallet}
+                                    maxLength={66}
+                                />
+                                {walletError && <p className="text-red-500">{walletError}</p>}
+                            </div>
+                            <div>
+                                <label
+                                    className=" block text-white text-xl font-semibold mb-2 text-gray-700"
                                 >Account Address</label>
                                 <input
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
                                     onChange={handleAccount}
-                                    onKeyPress={handleKeyPress}
+                                    onKeyPress={handlePressAccount}
+                                    maxLength={66}
                                 />
-                                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+                                {accountError && <p className="text-red-500">{accountError}</p>}
                             </div>
 
                             <div>
@@ -93,14 +155,15 @@ const Deploy = () => {
                                 <input
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
-                                    onChange={handleAccount}
-                                    onKeyPress={handleKeyPress}
+                                    onChange={handleKey}
+                                    onKeyPress={handlePressKey}
+                                    maxLength={66}
                                 />
-                                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+                                {keyError && <p className="text-red-500">{keyError}</p>}
                             </div>
                             <div>
-                                <h1>{currentPage === 'aptos' ? 'Aptos Component' : 'Foundry Component'}</h1>
-                                {currentPage === 'aptos' && (
+                                <h1>{page === 'aptos' ? 'Aptos Component' : 'Foundry Component'}</h1>
+                                {page === 'aptos' && (
                                     <>
                                         <label htmlFor="network" className="block text-xl text-white font-semibold mb-2 text-gray-700">
                                             Select Network
@@ -109,22 +172,34 @@ const Deploy = () => {
                                             id="network"
                                             value={selectedNetwork}
                                             onChange={handleNetworkChange}
-                                            className="w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                                            className="w-full px-5 py-4 text-[#8f8f8f] text-[15px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
                                         >
                                             <option value="https://aptos.testnet.suzuka.movementlabs.xyz/v1" className="bg-white text-[#8f8f8f]">
                                                 https://aptos.testnet.suzuka.movementlabs.xyz/v1
                                             </option>
-                                            <option value="https://aptos.testnet.suzuka.movementlabs.xyz/v1" className="bg-white text-[#8f8f8f]">
+                                            <option value="https://devnet.suzuka.movementnetwork.xyz/v1" className="bg-white text-[#8f8f8f]">
                                                 https://devnet.suzuka.movementnetwork.xyz/v1
                                             </option>
                                         </select>
                                     </>
                                 )}
-                                {currentPage === 'foundry' && (
-                                    <p>The default URL for Foundry is: https://mevm.devnet.imola.movementlabs.xyz</p>
+                                {page === 'foundry' && (
+                                    <>
+                                        <label htmlFor="network" className="block text-xl text-white font-semibold mb-2 text-gray-700">
+                                            Select Network
+                                        </label>
+                                        <select
+                                            id="network"
+                                            value={selectedNetwork}
+                                            onChange={handleNetworkChange}
+                                            className="w-full px-5 py-4 text-[#8f8f8f] text-[15px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                                        >
+                                            <option value="https://mevm.devnet.imola.movementlabs.xyz" className="bg-white text-[#8f8f8f]">
+                                                https://mevm.devnet.imola.movementlabs.xyz
+                                            </option>
+                                        </select>
+                                    </>
                                 )}
-                                <p>Base URL: {baseUrl}</p>
-                                {/* Sử dụng baseUrl để thực hiện các yêu cầu */}
                             </div>
                         </div>
                     </div>

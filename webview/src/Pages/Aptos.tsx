@@ -34,7 +34,7 @@ const Aptos: React.FC = () => {
 
               >
                 <Link to="/account-balance" className="focus:outline-none"
-                  state={{ fromAptos: 'aptos' }}
+                  state={{ page: 'aptos' }}
                 >
                   <Tab
                     icon={<CoinIcon className="!relative !w-[24px] !h-[24px]" />}
@@ -46,7 +46,7 @@ const Aptos: React.FC = () => {
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
               >
                 <Link to="/deploy" className="focus:outline-none"
-                  state={{ fromAptos: 'foundry' }}
+                  state={{ page: 'aptos' }}
                 >
                   <Tab
                     icon={<AptosIcon className="!relative !w-[24px] !h-[24px]" />}

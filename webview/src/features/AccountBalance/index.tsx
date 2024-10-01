@@ -1,5 +1,5 @@
 //@ts-ignore
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { Link, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useState } from "react";
 
@@ -22,11 +22,13 @@ const AccountBalance = () => {
             e.preventDefault();
         }
     };
-    const { currentPage } = useOutletContext<{ currentPage: string | null }>();
+    const location = useLocation();
+    const page = location.state?.page;
     const navigate = useNavigate();
     const handleNavigate = () => {
-        navigate(`${currentPage}`);
+        navigate(`/${page}`);
     };
+
 
     return (
         <>
@@ -41,6 +43,8 @@ const AccountBalance = () => {
                                 Account Balance
                             </div>
                         </div>
+
+
                         <div className="flex flex-col gap-[24px] my-5 w-full ">
                             <div>
                                 <label htmlFor="coin"
