@@ -32,7 +32,7 @@ const Foundry: React.FC = () => {
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
 
               >
-                <Link to="/Aptos" className="focus:outline-none">
+                <Link to="/foundry" className="focus:outline-none">
                   <Tab
                     icon={<CoinIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Account Balance"
@@ -42,7 +42,7 @@ const Foundry: React.FC = () => {
               <button
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
               >
-                <Link to="/foundry" className="focus:outline-none">
+                <Link to="/deploy" className="focus:outline-none">
                   <Tab
                     icon={<FoundryIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Deploy"

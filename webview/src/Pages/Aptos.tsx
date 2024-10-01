@@ -8,9 +8,10 @@ import { CoinIcon } from '../icons/CoinIcon';
 import { AptosIcon } from '../icons/AptosIcon';
 
 const Aptos: React.FC = () => {
+
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/");
+    navigate(`/`);
   };
   return (
     <div className="h-[200vh] grow overflow-y-scroll">
@@ -32,7 +33,9 @@ const Aptos: React.FC = () => {
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
 
               >
-                <Link to="/Aptos" className="focus:outline-none">
+                <Link to="/account-balance" className="focus:outline-none"
+                  state={{ fromAptos: 'aptos' }}
+                >
                   <Tab
                     icon={<CoinIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Account Balance"
@@ -42,7 +45,9 @@ const Aptos: React.FC = () => {
               <button
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
               >
-                <Link to="/foundry" className="focus:outline-none">
+                <Link to="/deploy" className="focus:outline-none"
+                  state={{ fromAptos: 'foundry' }}
+                >
                   <Tab
                     icon={<AptosIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Deploy"
@@ -54,6 +59,7 @@ const Aptos: React.FC = () => {
         </div>
       </div>
     </div>
+
   );
 };
 

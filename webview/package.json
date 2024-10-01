@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^1.28.0",
+    "@mantine/core": "^7.13.1",
     "@tanstack/react-query": "^5.56.2",
     "aptos": "^1.21.0",
     "react": "^18.3.1",
