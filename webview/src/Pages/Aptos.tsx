@@ -1,13 +1,12 @@
 import React from 'react';
 //@ts-ignore
-import WalletInformation from '../components/WalletInformation';
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from '../icons/ArrowLeft';
 import { Tab } from '../components/Tab';
 import { CoinIcon } from '../icons/CoinIcon';
 import { AptosIcon } from '../icons/AptosIcon';
 import { WalletIcon } from '../icons/WalletIcon';
-import { MoveIcon } from '../icons/MoveIcon';
+import { FaucetIcon } from '../icons/FaucetIcon';
 
 const Aptos: React.FC = () => {
 
@@ -34,6 +33,18 @@ const Aptos: React.FC = () => {
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full">
               <button
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
+              >
+                <Link to="/faucets" className="focus:outline-none"
+                  state={{ page: 'aptos' }}
+                >
+                  <Tab
+                    icon={<FaucetIcon className="!relative !w-[24px] !h-[24px]" />}
+                    title="Faucets"
+                  />
+                </Link>
+              </button>
+              <button
+                className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
 
               >
                 <Link to="/account-balance" className="focus:outline-none"
@@ -42,6 +53,20 @@ const Aptos: React.FC = () => {
                   <Tab
                     icon={<CoinIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Account Balance"
+                  />
+                </Link>
+              </button>
+
+
+              <button
+                className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
+              >
+                <Link to="/your-address" className="focus:outline-none"
+                  state={{ page: 'aptos' }}
+                >
+                  <Tab
+                    icon={<WalletIcon className="!relative !w-[24px] !h-[24px]" />}
+                    title="YourAddress"
                   />
                 </Link>
               </button>
@@ -54,30 +79,6 @@ const Aptos: React.FC = () => {
                   <Tab
                     icon={<AptosIcon className="!relative !w-[24px] !h-[24px]" />}
                     title="Deploy"
-                  />
-                </Link>
-              </button>
-              <button
-                className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
-              >
-                <Link to="/faucets" className="focus:outline-none"
-                  state={{  page: 'aptos' }}
-                >
-                  <Tab
-                    icon={<MoveIcon className="!relative !w-[24px] !h-[24px]" />}
-                    title="faucets"
-                  />
-                </Link>
-              </button>
-              <button
-                className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
-              >
-                <Link to="/your-address" className="focus:outline-none"
-                  state={{  page: 'aptos' }}
-                >
-                  <Tab
-                    icon={<WalletIcon className="!relative !w-[24px] !h-[24px]" />}
-                    title="YourAddress"
                   />
                 </Link>
               </button>

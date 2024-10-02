@@ -7,9 +7,9 @@ import { RootLayout } from './RootLayout';
 import Aptos from './Pages/Aptos';
 import Foundry from './Pages/Foundry';
 import AccountBalance from './features/AccountBalance';
-import Deploy from './features/Deploy/Deploy';
-import Faucets from './features/Faucets/Faucets';
-import YourAddress from './features/YourAddress/YourAddress';
+import Deploy from './features/Deploy';
+import Faucets from './features/Faucets';
+import YourAddress from './features/YourAddress';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;

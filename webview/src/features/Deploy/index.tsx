@@ -23,14 +23,17 @@ const Deploy = () => {
 
     const [file, setFile] = useState<File | null>(null);
     //@ts-ignore
+    const [fileName, setFileName] = useState<string | null>(null);
+    //@ts-ignore
     const [modName, setModName] = useState('');
 
-    const [selectedNetwork, setSelectedNetwork] = useState<string>('https://aptos.testnet.suzuka.movementlabs.xyz/v1');
+    const [selectedNetwork, setSelectedNetwork] = useState<string>('https://mevm.devnet.imola.movementlabs.xyz');
 
     const location = useLocation();
     const page = location.state?.page;
     const handleNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedNetwork(e.target.value);
+        console.log(e.target.value);
     };
 
     const getBaseUrl = () => {
@@ -38,33 +41,24 @@ const Deploy = () => {
             return selectedNetwork === 'https://aptos.testnet.suzuka.movementlabs.xyz/v1'
                 ? 'https://aptos.testnet.suzuka.movementlabs.xyz/v1'
                 : 'https://devnet.suzuka.movementnetwork.xyz/v1'; // URL cho mạng devnet
-        } else if (page === 'foundry') {
-            return 'https://mevm.devnet.imola.movementlabs.xyz'; // URL cho Foundry
+        } else {
+            return selectedNetwork === 'https://mevm.devnet.imola.movementlabs.xyz'; // URL cho Foundry
         }
-        return ''; // Trả về chuỗi rỗng nếu không tìm thấy
     };
     //@ts-ignore
     const baseUrl = getBaseUrl();
-    //@ts-ignore
-    const [number, setNumber] = useState<number | string>('');
 
     const handleAccount = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setAccountError('');
-        if ((value.length === 2 && value === '0x') ||
-            (value.startsWith('0x') && /^[0-9a-fA-F]*$/.test(value.slice(2)) && value.length <= 66)) {
+        if (value.length <= 64) {
             setAccAddr(e.target.value);
-            setAccountError('');
-        } else {
-            if (!value.startsWith('0x') && value.length > 0) {
-                setWalletError('Input must start with "0x".');
-            } else if (value.length !== 66) {
-                setWalletError('Input must be exactly 66 characters long');
-            }
+        } else if (value.length !== 64) {
+            setWalletError('Input must be exactly 64 characters long');
         }
     }
     const handlePressAccount = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (!/^[0-9a-wy-zA-WY-Z]*$/.test(e.key)) {
+        if (!/^[0-9a-fA-F]*$/.test(e.key)) {
             e.preventDefault();
             setAccountError('Only hexadecimal characters are allowed.');
         }
@@ -73,46 +67,101 @@ const Deploy = () => {
     const handleWallet = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setWalletError('');
-        if ((value.length === 2 && value === '0x') ||
-            (value.startsWith('0x') && /^[0-9a-fA-F]*$/.test(value.slice(2)) && value.length <= 66)) {
-            setWallet(e.target.value);
+
+        // Kiểm tra địa chỉ ví
+        if (
+            (value.length === 2 && value === '0x') ||
+            (value.startsWith('0x') && /^[0-9a-fA-F]{40}$/.test(value.slice(2)))
+        ) {
+            setWallet(value);
             setWalletError('');
         } else {
-            if (!value.startsWith('0x') && value.length > 0) {
+            if (!value.startsWith('0x')) {
                 setWalletError('Input must start with "0x".');
-            } else if (value.length !== 66) {
-                setWalletError('Input must be exactly 66 characters long');
+            } else if (page === 'aptos' && value.startsWith('0x') && value.length !== 66 || page === 'foundry' && value.startsWith('0x') && value.length !== 42) {
+                setWalletError(`${page === 'aptos' ? 'Input must be exactly 66 characters long.' : 'Input must be exactly 42 characters long.'}`);
+            } else if (value.length > 2 && !/^[0-9a-fA-F]*$/.test(value.slice(2))) {
+                setWalletError('Only hexadecimal characters are allowed.');
             }
         }
-    }
+    };
+
     const handlePressWallet = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (!/^[0-9a-wy-zA-WY-Z]*$/.test(e.key)) {
-            e.preventDefault();
-            setWalletError('Only hexadecimal characters are allowed.');
+        const value = e.currentTarget.value;
+
+        if (value.startsWith('0x')) {
+            if (!/^[0-9a-fA-F]*$/.test(e.key) && e.key !== 'Backspace') {
+                e.preventDefault();
+                setWalletError('Only hexadecimal characters are allowed after "0x".');
+            }
+        } else {
+            if (value.length === 0 && e.key !== '0') {
+                e.preventDefault();
+                setWalletError('Input must start with "0x".');
+            } else if (value.length === 1 && e.key !== 'x') {
+                e.preventDefault();
+                setWalletError('Input must start with "0x".');
+            }
         }
     };
 
     const handleKey = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setKeyError('');
-        if ((value.length === 2 && value === '0x') ||
-            (value.startsWith('0x') && /^[0-9a-fA-F]*$/.test(value.slice(2)) && value.length <= 66)) {
-            setPrivateKey(e.target.value);
-            setKeyError('');
+        if (page === 'aptos') {
+            // Kiểm tra địa chỉ ví
+            if (
+                (value.length === 2 && value === '0x') ||
+                (value.startsWith('0x') && /^[0-9a-fA-F]{40}$/.test(value.slice(2)))
+            ) {
+                setPrivateKey(value);
+                setKeyError('');
+            } else {
+                if (!value.startsWith('0x')) {
+                    setKeyError('Input must start with "0x".');
+                } else if (value.startsWith('0x') && value.length !== 66) {
+                    setKeyError('Input must be exactly 66 characters long.');
+                } else if (value.length > 2 && !/^[0-9a-fA-F]*$/.test(value.slice(2))) {
+                    setKeyError('Only hexadecimal characters are allowed.');
+                }
+            }
         } else {
-            if (!value.startsWith('0x') && value.length > 0) {
-                setWalletError('Input must start with "0x".');
-            } else if (value.length !== 66) {
-                setWalletError('Input must be exactly 66 characters long');
+            if (value.length <= 64) {
+                setPrivateKey(e.target.value);
+                setKeyError('');
+            } else if (value.length !== 64) {
+                setKeyError('Input must be exactly 64 characters long');
             }
         }
-    }
-    const handlePressKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (!/^[0-9a-wy-zA-WY-Z]*$/.test(e.key)) {
-            e.preventDefault();
-            setKeyError('Only hexadecimal characters are allowed.');
-        }
+
     };
+
+    const handlePressKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const value = e.currentTarget.value;
+        if (page === 'aptos') {
+            if (value.startsWith('0x')) {
+                if (!/^[0-9a-fA-F]*$/.test(e.key)) {
+                    e.preventDefault();
+                    setKeyError('Only hexadecimal characters are allowed after "0x".');
+                }
+            } else {
+                if (value.length === 0 && e.key !== '0') {
+                    e.preventDefault();
+                    setKeyError('Input must start with "0x".');
+                } else if (value.length === 1 && e.key !== 'x') {
+                    e.preventDefault();
+                    setKeyError('Input must start with "0x".');
+                }
+            }
+        } else {
+            if (!/^[0-9a-fA-F]*$/.test(e.key)) {
+                e.preventDefault();
+                setKeyError('Only hexadecimal characters are allowed.');
+            }
+        }
+
+    };
+
 
     const handleModName = (e: React.ChangeEvent<HTMLInputElement>) => {
         setModName(e.target.value);
@@ -121,7 +170,7 @@ const Deploy = () => {
     const handleDeploy = async () => {
         setLoading(true);
         setApiError('');
-
+        const url = 'http://3.107.36.227:6666/upload/solidity';
         try {
             const formData = new FormData();
             if (file) {
@@ -131,12 +180,10 @@ const Deploy = () => {
             }
             formData.append('privateKey', privatekey);
             formData.append('rpcUrl', selectedNetwork);
+            console.log("checknetwork", selectedNetwork, privatekey, selectedNetwork)
 
-            if (file) {
-                formData.append('file', file);
-            }
 
-            const response = await fetch(`${baseUrl}/deploy`, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: formData,
             });
@@ -149,8 +196,13 @@ const Deploy = () => {
             console.log("Deployment successful:", data);
         } catch (error) {
             console.error('Error during deployment:', error);
+
             if (error instanceof Error) {
-                setApiError(error.message || 'Failed to deploy');
+                if (wallet === '' || privatekey === '') {
+                    setApiError('Fill in the full information');
+                } else {
+                    setApiError(error.message || 'Failed to deploy');
+                }
             } else {
                 setApiError('An unknown error occurred');
             }
@@ -158,6 +210,7 @@ const Deploy = () => {
             setLoading(false);
         }
     };
+
     const navigate = useNavigate();
     const handleNavigate = () => {
         navigate(`/${page}`);
@@ -179,7 +232,7 @@ const Deploy = () => {
                         </div>
                         <div className="flex flex-col gap-[24px] my-5 w-full ">
                             <div>
-                                <FileUpload file={file} setFile={setFile} page={page} />
+                                <FileUpload file={file} setFile={setFile} page={page} setFileName={setFileName} />
                             </div>
                             <div>
                                 <label
@@ -190,11 +243,11 @@ const Deploy = () => {
                                     type="text"
                                     onChange={handleWallet}
                                     onKeyPress={handlePressWallet}
-                                    maxLength={66}
+                                    maxLength={page === 'aptos' ? 66 : 42}
                                 />
                                 {walletError && <p className="text-red-500">{walletError}</p>}
                             </div>
-                            <div>
+                            <div className={`${page === 'aptos' ? '' : 'hidden'}`}>
                                 <label
                                     className=" block text-white text-xl font-semibold mb-2 text-gray-700"
                                 >Module Name</label>
@@ -202,18 +255,20 @@ const Deploy = () => {
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
                                     onChange={handleModName}
+                                    disabled={page === 'aptos' ? false : true}
+
                                 />
                             </div>
-                            <div>
+                            <div className={`${page === 'aptos' ? '' : 'hidden'}`}>
                                 <label
                                     className=" block text-white text-xl font-semibold mb-2 text-gray-700"
                                 >Account Address</label>
                                 <input
-                                    className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
+                                    className={` w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
                                     onChange={handleAccount}
                                     onKeyPress={handlePressAccount}
-                                    maxLength={66}
+                                    maxLength={64}
                                 />
                                 {accountError && <p className="text-red-500">{accountError}</p>}
                             </div>
@@ -227,7 +282,7 @@ const Deploy = () => {
                                     type="text"
                                     onChange={handleKey}
                                     onKeyPress={handlePressKey}
-                                    maxLength={66}
+                                    maxLength={page === 'aptos' ? 66 : 64}
                                 />
                                 {keyError && <p className="text-red-500">{keyError}</p>}
                             </div>
@@ -241,7 +296,7 @@ const Deploy = () => {
                                             id="network"
                                             value={selectedNetwork}
                                             onChange={handleNetworkChange}
-                                            className="w-full px-5 py-4 text-[#8f8f8f] text-[15px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                                            className="w-full px-5 py-4 text-[#8f8f8f] text-[17px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
                                         >
                                             <option value="https://aptos.testnet.suzuka.movementlabs.xyz/v1" className="bg-white text-[#8f8f8f]">
                                                 https://aptos.testnet.suzuka.movementlabs.xyz/v1
@@ -261,8 +316,9 @@ const Deploy = () => {
                                             id="network"
                                             value={selectedNetwork}
                                             onChange={handleNetworkChange}
-                                            className="w-full px-5 py-4 text-[#8f8f8f] text-[15px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                                            className="w-full px-5 py-4 text-[#8f8f8f] text-[17px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
                                         >
+                                            <option value="" disabled>Select a network</option>
                                             <option value="https://mevm.devnet.imola.movementlabs.xyz" className="bg-white text-[#8f8f8f]">
                                                 https://mevm.devnet.imola.movementlabs.xyz
                                             </option>
