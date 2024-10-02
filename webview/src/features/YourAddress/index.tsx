@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import axios from "axios";
 //@ts-ignore
 import { Link, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
@@ -8,17 +10,25 @@ import { FoundryIcon } from "../../icons/FoundryIcon";
 const YourAddress = () => {
     //@ts-ignore
     const [number, setNumber] = useState<number | string>('');
-    const handleBalance = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        if (value === '' || /^\d+$/.test(value)) {
-            setNumber(value === '' ? '' : Number(value));
-        }
-    };
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-        }
-    };
+    const [walletAddress, setWalletAddress] = useState<string>('');
+    const [privateKey, setPrivateKey] = useState<string>('');
+    const [publicKey, setPublicKey] = useState<string>('');
+    
+
+    useEffect(() => {
+        // Lấy dữ liệu từ máy chủ
+        axios.get('http://localhost:3000')
+            .then(response => {
+                const { walletAddress, privateKey, publicKey } = response.data;
+                setWalletAddress(walletAddress);
+                setPrivateKey(privateKey);
+                setPublicKey(publicKey);
+            })
+            .catch(error => {
+                console.error("Có lỗi xảy ra khi lấy dữ liệu!", error);
+            });
+    }, []);
+
     const location = useLocation();
     const page = location.state?.page;
     const navigate = useNavigate();
@@ -51,9 +61,8 @@ const YourAddress = () => {
                                 <input
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
-                                    max={10000000000}
-                                    onChange={handleBalance}
-                                    onKeyPress={handleKeyPress}
+                                    value={walletAddress}
+                                    readOnly
                                 />
                             </div>
                             <div>
@@ -63,9 +72,8 @@ const YourAddress = () => {
                                 <input
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
-                                    max={10000000000}
-                                    onChange={handleBalance}
-                                    onKeyPress={handleKeyPress}
+                                    value={privateKey}
+                                    readOnly
                                 />
                             </div>
                             <div>
@@ -75,9 +83,8 @@ const YourAddress = () => {
                                 <input
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
-                                    max={10000000000}
-                                    onChange={handleBalance}
-                                    onKeyPress={handleKeyPress}
+                                    value={publicKey}
+                                    readOnly
                                 />
                             </div>
                         </div>

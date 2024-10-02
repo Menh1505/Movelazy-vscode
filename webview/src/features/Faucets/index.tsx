@@ -1,3 +1,4 @@
+import axios from "axios";
 //@ts-ignore
 import { Link, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
@@ -9,22 +10,21 @@ const Faucets = () => {
     //@ts-ignore
     const [number, setNumber] = useState<number | string>('');
     const [loading, setLoading] = useState(false);
-    const handleBalance = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        if (value === '' || /^\d+$/.test(value)) {
-            setNumber(value === '' ? '' : Number(value));
-        }
-    };
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-        }
-    };
+    const [aptosAddress, setAptosAddress] = useState<string>('');
+
     const handleGetMove = () => {
         setLoading(true);
-        // Thêm logic xử lý cho nút GET MOVE
-        // Sau khi hoàn thành, đặt lại loading thành false
-        setTimeout(() => setLoading(false), 2000); // Ví dụ: giả lập thời gian chờ
+        axios.post('http://localhost:3000', { aptosAddress })
+            .then(response => {
+                console.log("Response:", response.data);
+                // Xử lý phản hồi từ máy chủ nếu cần
+            })
+            .catch(error => {
+                console.error("Có lỗi xảy ra khi gửi dữ liệu!", error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
     const location = useLocation();
     const page = location.state?.page;
@@ -58,9 +58,8 @@ const Faucets = () => {
                                 <input
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"
-                                    max={10000000000}
-                                    onChange={handleBalance}
-                                    onKeyPress={handleKeyPress}
+                                    value={aptosAddress}
+                                    onChange={(e) => setAptosAddress(e.target.value)}
                                 />
                             </div>
                             <div className="mt-5">
