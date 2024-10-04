@@ -14,7 +14,7 @@ const Faucets = () => {
 
     const handleGetMove = () => {
         setLoading(true);
-        axios.post('http://localhost:3000', { aptosAddress })
+        axios.post('http://3.107.36.227:6666', { aptosAddress })
             .then(response => {
                 console.log("Response:", response.data);
                 // Xử lý phản hồi từ máy chủ nếu cần
@@ -54,7 +54,7 @@ const Faucets = () => {
                             <div>
                                 <label
                                     className=" block text-white text-xl font-semibold mb-2 text-gray-700"
-                                >Aptos Address</label>
+                                >Wallet Address</label>
                                 <input
                                     className={`w-full px-5 py-4 text-[#8f8f8f] text-[20px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                                     type="text"

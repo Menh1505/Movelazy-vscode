@@ -1,4 +1,4 @@
-
+import axios from 'axios';
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useState } from "react";
@@ -17,6 +17,7 @@ const Deploy = () => {
     const [walletError, setWalletError] = useState('');
     const [accountError, setAccountError] = useState('');
     const [keyError, setKeyError] = useState('');
+    const [deploymentInfo, setDeploymentInfo] = useState('');
 
     const [loading, setLoading] = useState(false); // For button loading state
     const [apiError, setApiError] = useState('');  // To show any API errors
@@ -170,7 +171,8 @@ const Deploy = () => {
     const handleDeploy = async () => {
         setLoading(true);
         setApiError('');
-        const url = 'http://3.107.36.227:6666/upload/solidity';
+        setDeploymentInfo('');
+        const url = 'http://3.107.36.227:3000/upload/solidity';
         try {
             const formData = new FormData();
             if (file) {
@@ -180,29 +182,21 @@ const Deploy = () => {
             }
             formData.append('privateKey', privatekey);
             formData.append('rpcUrl', selectedNetwork);
-            console.log("checknetwork", selectedNetwork, privatekey, selectedNetwork)
-
-
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData,
+    
+            const response = await axios.post(url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
-
-            if (!response.ok) {
-                throw new Error('Deployment failed');
-            }
-
-            const data = await response.json();
-            console.log("Deployment successful:", data);
+    
+            console.log("Deployment successful:", response.data);
+            setDeploymentInfo(response.data);
+            alert(`Deployment successful:\n${response.data}`);
         } catch (error) {
             console.error('Error during deployment:', error);
-
-            if (error instanceof Error) {
-                if (wallet === '' || privatekey === '') {
-                    setApiError('Fill in the full information');
-                } else {
-                    setApiError(error.message || 'Failed to deploy');
-                }
+    
+            if (axios.isAxiosError(error)) {
+                setApiError(error.response?.data || 'Failed to deploy');
             } else {
                 setApiError('An unknown error occurred');
             }
@@ -210,7 +204,7 @@ const Deploy = () => {
             setLoading(false);
         }
     };
-
+    
     const navigate = useNavigate();
     const handleNavigate = () => {
         navigate(`/${page}`);
@@ -336,6 +330,12 @@ const Deploy = () => {
 
                                 {apiError && <p className="text-red-500 mt-2">{apiError}</p>}
                             </div>
+                            {deploymentInfo && (
+                                <div className="mt-4 p-4 bg-gray-800 text-white rounded-lg">
+                                    <h3 className="text-lg font-semibold">Deployment Info:</h3>
+                                    <pre className="whitespace-pre-wrap">{deploymentInfo}</pre>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
