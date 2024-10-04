@@ -10,12 +10,10 @@ import AccountBalance from './features/AccountBalance';
 import Deploy from './features/Deploy';
 import Faucets from './features/Faucets';
 import YourAddress from './features/YourAddress';
+//@ts-ignore
+import * as vscode from "vscode";
 
-declare const acquireVsCodeApi: <T = unknown>() => {
-  getState: () => T;
-  setState: (data: T) => void;
-  postMessage: (msg: unknown) => void;
-};
+// const vscode = acquireVsCodeApi();
 
 const root = createRoot(document.getElementById('root')!);
 if (root) {

@@ -32,8 +32,6 @@ const Faucets = () => {
     const handleNavigate = () => {
         navigate(`/${page}`);
     };
-
-
     return (
         <>
             <div className="h-[300vh] grow overflow-y-scroll">
@@ -78,5 +76,14 @@ const Faucets = () => {
         </>
     );
 }
+
+// const Faucets = () => {
+//     return (
+
+//         <a href="https://faucet.movementlabs.xyz/?network=aptos" className='absolute bg-blue-500 text-white font-bold py-2 px-4 rounded top-[10px] right-[10px]'>
+//             Feedback
+//         </a>
+//     )
+// }
 
 export default Faucets;

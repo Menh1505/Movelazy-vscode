@@ -3,6 +3,9 @@
   "compilerOptions": {
     "noUnusedLocals": false,
     "noUnusedParameters": false,
+    "types": [
+      "vscode"
+    ],
     // other options...
   },
   "references": [

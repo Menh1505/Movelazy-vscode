@@ -12,10 +12,12 @@ export default defineConfig({
                 chunkFileNames: `assets/[name].js`,
                 assetFileNames: `assets/[name].[ext]`,
             },
+            external: ['vscode'],
+
         },
     },
     server: {
-        port: 8080, // Chọn một cổng khả dụng
+        port: 3000, // Chọn một cổng khả dụng
         hmr: {
             // Cấu hình Hot Module Replacement (HMR)
             protocol: "ws", // Sử dụng WebSocket cho HMR

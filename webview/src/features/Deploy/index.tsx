@@ -1,15 +1,22 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AptosIcon } from "../../icons/AptosIcon";
 import { FoundryIcon } from "../../icons/FoundryIcon";
 import FileUpload from "../../components/FileUpload";
 import { OrbitProgress } from "react-loading-indicators";
 
+//@ts-ignore
+import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
+//@ts-ignore
+import { EventData } from "@estruyf/vscode/dist/models/EventData";
+//@ts-ignore
+import axios from "axios";
+
 const Deploy = () => {
     //@ts-ignore
-    const [accAddr, setAccAddr] = useState('');
+    const [accAddr, setAccAddr] = useState<string>('');
     //@ts-ignore
     const [wallet, setWallet] = useState('');
     //@ts-ignore
@@ -17,8 +24,9 @@ const Deploy = () => {
     const [walletError, setWalletError] = useState('');
     const [accountError, setAccountError] = useState('');
     const [keyError, setKeyError] = useState('');
-
+    //@ts-ignore
     const [loading, setLoading] = useState(false); // For button loading state
+    //@ts-ignore
     const [apiError, setApiError] = useState('');  // To show any API errors
 
     const [file, setFile] = useState<File | null>(null);
@@ -26,6 +34,14 @@ const Deploy = () => {
     const [fileName, setFileName] = useState<string | null>(null);
     //@ts-ignore
     const [modName, setModName] = useState('');
+    //@ts-ignore
+    const [data, setdata] = useState<{ file: File | null; privateKey: string; rpcUrl: string }>({
+        file: new File([], ''),
+        privateKey: '',
+        rpcUrl: '',
+    });
+    //@ts-ignore
+    const [responseData, setResponseData] = useState(null);
 
     const [selectedNetwork, setSelectedNetwork] = useState<string>('https://mevm.devnet.imola.movementlabs.xyz');
 
@@ -166,51 +182,128 @@ const Deploy = () => {
     const handleModName = (e: React.ChangeEvent<HTMLInputElement>) => {
         setModName(e.target.value);
     }
-
-    const handleDeploy = async () => {
-        setLoading(true);
-        setApiError('');
-        const url = 'http://3.107.36.227:6666/upload/solidity';
-        try {
-            const formData = new FormData();
-            if (file) {
-                formData.append('file', file);
-            } else {
-                throw new Error('No file selected for upload');
-            }
-            formData.append('privateKey', privatekey);
-            formData.append('rpcUrl', selectedNetwork);
-            console.log("checknetwork", selectedNetwork, privatekey, selectedNetwork)
-
-
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData,
+    Messenger.getVsCodeAPI();
+    //@ts-ignore
+    const handleDeploy = () => {
+        messageHandler.request<any>("GET_DATA").then((data) => {
+            // Do something with the returned data
+            console.log(data);
+            setApiError(data);
+        });
+        messageHandler.request<string>('GET_DATA_ERROR')
+            .then((msg) => {
+                setApiError(msg);
+            })
+            .catch((err) => {
+                setApiError(err);
             });
 
-            if (!response.ok) {
-                throw new Error('Deployment failed');
-            }
-
-            const data = await response.json();
-            console.log("Deployment successful:", data);
-        } catch (error) {
-            console.error('Error during deployment:', error);
-
-            if (error instanceof Error) {
-                if (wallet === '' || privatekey === '') {
-                    setApiError('Fill in the full information');
-                } else {
-                    setApiError(error.message || 'Failed to deploy');
-                }
-            } else {
-                setApiError('An unknown error occurred');
-            }
-        } finally {
-            setLoading(false);
-        }
+    }
+    const listener = (message: MessageEvent<EventData<any>>) => {
+        const event = message.data;
+        console.log(event.command, event.payload);
     };
+    Messenger.listen(listener);
+    const [fetchQuote, setFetchQuote] = useState(false);
+    useEffect(() => {
+        // Function to fetch data from the API
+        const fetchData = async () => {
+            setLoading(true);
+            setApiError('');
+            try {
+                // Tạo một đối tượng FormData
+                const formData = new FormData();
+                if (file) {
+                    formData.append('file', file);
+                } else {
+                    throw new Error('No file selected for upload');
+                }
+                formData.append('privateKey', privatekey);
+                formData.append('rpcUrl', selectedNetwork);
 
+                // Gửi yêu cầu POST với FormData
+                const response = await fetch('http://3.107.36.227:3000/upload/solidity', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include',
+                });
+
+                // Nếu API yêu cầu GET để lấy trích dẫn, thì có thể không cần dùng FormData
+                // Chỉ cần sử dụng fetch như bình thường
+                console.log(response);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Success', data);
+                } else {
+                    setApiError("check respone:" + response.status)
+                    console.error('Failed to fetch quote:', response.status);
+                }
+            } catch (error) {
+                console.error('Error during deployment:', error);
+                if (error instanceof Error) {
+                    if (privatekey === '') {
+                        setApiError('Fill in the privateKey information');
+                    } else {
+                        setApiError(error.message || 'Failed to deploy');
+                    }
+                } else {
+                    setApiError('An unknown error occurred');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        //     const response = await axios.post('http://3.107.36.227:3000/upload/solidity', formData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data'
+        //         },
+        //         withCredentials: true,
+        //     });
+
+        //     if (response.status === 200) {
+        //         const data = response.data;
+        //         setResponseData(data);
+        //     } else {
+        //         console.error('Failed to fetch quote:', response.status);
+        //         setApiError("" + response.status);
+        //     }
+        // } catch (error: unknown) {
+        //     console.error('Error during deployment:', error);
+        //     if (privatekey === '') {
+        //         setApiError('Fill in the privateKey information');
+        //     } else {
+        //         if (error instanceof Error) {
+        //         } else if (axios.isAxiosError(error) && error.response) {
+        //             setApiError(error.response.data?.message || 'Failed to deploy');
+        //         } else {
+        //             setApiError('An unknown error occurred');
+        //         }
+        //     }
+        // } finally {
+        //     setLoading(false);
+        // }
+        // };
+
+        if (fetchQuote) { // Chỉ fetch khi fetchQuote là true
+            fetchData();
+            setFetchQuote(false); // Reset lại để không fetch lại khi không cần thiết
+        }
+    }, [fetchQuote]);
+
+    useEffect(() => {
+        if (!file) {
+            messageHandler.send("Get_File", { file: file });
+        }
+    }, [file])
+
+    useEffect(() => {
+        messageHandler.send("Get_privateKey", { privatekey: privatekey });
+    }, [privatekey])
+
+    useEffect(() => {
+        messageHandler.send("Get_rpcUrl", { rpcUrl: selectedNetwork });
+    })
     const navigate = useNavigate();
     const handleNavigate = () => {
         navigate(`/${page}`);
@@ -329,12 +422,20 @@ const Deploy = () => {
                             <div className="mt-5">
                                 <button
                                     className={`w-full px-5 py-4 mt-4 text-white text-[18px] rounded-lg ${loading ? 'bg-gray-500' : 'bg-blue-500'} `}
-                                    onClick={handleDeploy}
+                                    onClick={() => { setFetchQuote(true) }}
+                                    // onClick={handleDeploy}
                                     disabled={loading}>
                                     {loading ? <OrbitProgress color="#7d9cd9" size="small" text="" textColor="" /> : 'Deploy'}
                                 </button>
 
                                 {apiError && <p className="text-red-500 mt-2">{apiError}</p>}
+
+                                {responseData && (
+                                    <div className="mt-4 p-4 border border-gray-300 rounded text-white">
+                                        <h3 className="font-semibold text-white">Response Data:</h3>
+                                        <pre className="text-white">{JSON.stringify(responseData, null, 2)}</pre>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

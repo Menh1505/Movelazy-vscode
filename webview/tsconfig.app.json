@@ -9,14 +9,12 @@
     ],
     "module": "ESNext",
     "skipLibCheck": true,
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -24,6 +22,12 @@
   },
   "include": [
     "src/**/*.d.ts",
-    "src/**/*"
+    "src/**/*",
+    "vscode.d.ts" // Ensure this path is correct
+  ],
+  "exclude": [
+    "src/vscode.d.ts",
+    "node_modules", // Exclude node_modules if not already excluded
+    "**/*.spec.ts" // Optionally exclude test files
   ]
 }
