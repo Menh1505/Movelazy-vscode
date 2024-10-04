@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
+import { AptosAccount } from "aptos";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { AptosIcon } from "../../icons/AptosIcon";
 import { FoundryIcon } from "../../icons/FoundryIcon";
 
-const YourAddress = () => {
+const YourAddressAptos = () => {
     const [walletAddress, setWalletAddress] = useState<string>('');
     const [privateKey, setPrivateKey] = useState<string>('');
     const [publicKey, setPublicKey] = useState<string>('');
 
     useEffect(() => {
-        // Tạo ví mới bằng ethers.js
-        const wallet = ethers.Wallet.createRandom();
-        setWalletAddress(wallet.address);
-        setPrivateKey(wallet.privateKey);
-        setPublicKey(wallet.publicKey);
+        const account = new AptosAccount();
+        setWalletAddress(account.address().hex());
+        setPrivateKey(account.toPrivateKeyObject().privateKeyHex);
+        setPublicKey(account.pubKey().hex());
     }, []);
 
     const location = useLocation();
@@ -88,4 +87,4 @@ const YourAddress = () => {
     );
 }
 
-export default YourAddress;
+export default YourAddressAptos;
