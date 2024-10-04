@@ -61,7 +61,7 @@ const Aptos: React.FC = () => {
               <button
                 className="px-4 py-2 bg-[#ffffff1a] text-white rounded hover:bg-[#ffffff33] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full"
               >
-                <Link to="/your-address" className="focus:outline-none"
+                <Link to="/your-address-aptos" className="focus:outline-none"
                   state={{ page: 'aptos' }}
                 >
                   <Tab

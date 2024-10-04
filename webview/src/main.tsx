@@ -31,7 +31,7 @@ if (root) {
           <Route path="deploy" element={<Deploy />} />
           <Route path="faucets" element={<Faucets />} />
           <Route path="your-address" element={<YourAddress />} />
-
+          <Route path="your-address-aptos" element={<YourAddressAptos />} />
         </Route>
       </Routes>
     </MemoryRouter>
