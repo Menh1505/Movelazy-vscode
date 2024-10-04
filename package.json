@@ -65,6 +65,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@estruyf/vscode": "^1.1.0",
     "move-simulator-vscode": "file:",
     "react-router-dom": "^6.26.2"
   }
