@@ -47,7 +47,7 @@ const YourAddress = () => {
 
     return (
         <>
-            <div className="h-[300vh] grow overflow-y-scroll">
+            <div className="flex flex-wrap h-[300vh] grow overflow-y-scroll">
                 <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
                     <div className="flex flex-col w-full items-start gap-[20px] absolute top-[228px] left-0">
                         <div

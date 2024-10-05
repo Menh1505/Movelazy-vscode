@@ -13,7 +13,7 @@ const Deploy = () => {
     //@ts-ignore
     const [wallet, setWallet] = useState('');
     //@ts-ignore
-    const [privatekey, setPrivateKey] = useState('');
+    const [privatekey, setPrivateKey] = useState<string>(() => localStorage.getItem('privateKey') || '');
     const [keyError, setKeyError] = useState('');
     const [deploymentInfo, setDeploymentInfo] = useState('');
 
@@ -26,10 +26,24 @@ const Deploy = () => {
     //@ts-ignore
     const [modName, setModName] = useState('');
 
+    const [transactionHash, setTransactionHash] = useState<string | null>(null);
+
     const [maxGas, setMaxGas] = useState<number | ''>(1000);
     const [gasUnitPrice, setGasUnitPrice] = useState<number | ''>(1);
 
     const [selectedNetwork, setSelectedNetwork] = useState<string>('https://mevm.devnet.imola.movementlabs.xyz');
+
+    const getTransactionHash = (response: string): string | null => {
+        // Tìm dòng chứa Transaction hash
+        const lines = response.split('\n');
+        for (const line of lines) {
+            if (line.startsWith('Transaction hash:')) {
+                // Trả về giá trị sau dấu hai chấm
+                return line.split(': ')[1].trim();
+            }
+        }
+        return null; // Nếu không tìm thấy Transaction hash
+    };
 
     const location = useLocation();
     const page = location.state?.page;
@@ -152,6 +166,8 @@ const Deploy = () => {
                 },
             });
             console.log("Deployment successful:", response.data);
+            console.log(getTransactionHash(response.data));
+            setTransactionHash(getTransactionHash(response.data));
             setDeploymentInfo(response.data);
             alert(`Deployment successful:\n${response.data}`);
         } catch (error) {
@@ -174,7 +190,7 @@ const Deploy = () => {
 
     return (
         <>
-            <div className="h-[300vh] grow overflow-y-scroll">
+            <div className="flex flex-wrap h-[300vh] grow overflow-y-scroll ">
                 <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
                     <div className="flex flex-col w-full items-start gap-[20px] absolute top-[228px] left-0">
                         <div
@@ -210,6 +226,7 @@ const Deploy = () => {
                                     type="text"
                                     onChange={handleKey}
                                     onKeyPress={handlePressKey}
+                                    value={privatekey}
                                     maxLength={page === 'aptos' ? 66 : 64}
                                 />
                                 {keyError && <p className="text-red-500">{keyError}</p>}
@@ -292,17 +309,18 @@ const Deploy = () => {
 
                                 {apiError && <p className="text-red-500 mt-2">{apiError}</p>}
                             </div>
+
                             {deploymentInfo && (
-                                <div className="mt-4 p-4 bg-gray-800 text-white rounded-lg">
+                                <div className="flex flex-wrap w-full md:w-1/3 mt-4 p-4 bg-gray-800 text-white rounded-lg whitespace-pre-wrap break-words  ">
                                     <h3 className="text-lg font-semibold">Deployment Info:</h3>
-                                    <pre className="whitespace-pre-wrap">{deploymentInfo}</pre>
+                                    <pre className="flex flex-wrap whitespace-pre-wrap break-words ">{deploymentInfo}</pre>
 
                                 </div>
                             )}
                             {deploymentInfo && (
                                 <a
-                                    href='https://explorer.devnet.imola.movementnetwork.xyz'
-                                    className="w-full px-5 py-4 mt-4 text-white text-center text-[18px] rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors"
+                                    href={`https://explorer.devnet.imola.movementnetwork.xyz/#/txn/${transactionHash}`}
+                                    className=" w-full px-5 py-4 mt-4 text-white text-center text-[18px] rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors"
                                 >
                                     Explore
                                 </a>
