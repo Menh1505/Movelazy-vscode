@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
-import InputWallet from "../../components/InputWallet";
-import NavigateTitle from "../../components/Header";
-import ButtonAccount from "../../components/ButtonAccount";
+import InputWallet from "../../../../components/Foundry/InputWallet";
+import NavigateTitle from "../../../../components/Foundry/Header";
+import ButtonAccount from "../../../../components/Foundry/ButtonAccount";
 
 const AddressFoundry = () => {
     const [walletAddress, setWalletAddress] = useState<string>(() => localStorage.getItem('walletAddress') || '');
@@ -15,7 +15,6 @@ const AddressFoundry = () => {
         const privKey = wallet.privateKey.replace(/^0x/, '');
         const pubKey = wallet.publicKey;
 
-        // Update state and store in localStorage
         setWalletAddress(address);
         setPrivateKey(privKey);
         setPublicKey(pubKey);
@@ -26,8 +25,6 @@ const AddressFoundry = () => {
 
     };
 
-    const location = useLocation();
-    const page = location.state?.page;
 
     useEffect(() => {
         const savedWalletAddress = localStorage.getItem('walletAddress') || '';
@@ -42,7 +39,7 @@ const AddressFoundry = () => {
 
     const navigate = useNavigate();
     const handleNavigate = () => {
-        navigate(`/${page}`);
+        navigate(`/foundry`);
     };
 
     return (
@@ -50,7 +47,7 @@ const AddressFoundry = () => {
             <div className="flex flex-wrap h-[300vh] grow overflow-y-scroll">
                 <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
                     <div className="flex flex-col w-full items-start gap-[20px] absolute top-[228px] left-0">
-                        <NavigateTitle handleNavigate={handleNavigate} iconType="foundry" title="Account Foundry" />
+                        <NavigateTitle handleNavigate={handleNavigate} title="Account Foundry" />
                         <div className="flex flex-col gap-[24px] my-5 w-full ">
                             <InputWallet
                                 label="Wallet address"

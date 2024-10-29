@@ -3,11 +3,10 @@ import React from 'react';
 interface FileUploadProps {
   file: File | null;
   setFile: (file: File | null) => void;
-  page: string | null;
   setFileName: (file: string | null) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ file, setFile, page, setFileName }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ file, setFile, setFileName }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
@@ -28,7 +27,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ file, setFile, page, setFileNam
         id="file"
         className="w-full py-2 px-3 border border-gray-600 rounded-lg bg-gray-800 text-gray-300 focus:outline-none focus:ring focus:ring-blue-500 transition duration-200"
         onChange={handleFileChange}
-        accept={page === 'aptos' ? '.move' : '.sol'}
+        accept='.sol'
         required
       />
       {file && <p className="mt-2 text-gray-600">Selected file: {file.name}</p>} {/* Display selected file name */}

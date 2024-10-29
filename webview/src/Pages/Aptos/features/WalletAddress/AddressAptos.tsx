@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-//@ts-ignore
 import { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } from "@aptos-labs/ts-sdk";
-//@ts-ignore
-import { AptosAccount } from "aptos";
-import NavigateTitle from "../../components/Header";
-import InputWallet from "../../components/InputWallet";
-import ButtonAccount from "../../components/ButtonAccount";
+import NavigateTitle from "../../../../components/Aptos/Header";
+import InputWallet from "../../../../components/Aptos/InputWallet";
+import ButtonAccount from "../../../../components/Aptos/ButtonAccount";
 
 type Coin = { coin: { value: string } };
 const AddressAptos = () => {
@@ -79,11 +76,9 @@ const AddressAptos = () => {
     }, []);
 
 
-    const location = useLocation();
-    const page = location.state?.page;
     const navigate = useNavigate();
     const handleNavigate = () => {
-        navigate(`/${page}`);
+        navigate(`/aptos`);
     };
 
     return (
@@ -91,7 +86,7 @@ const AddressAptos = () => {
             <div className="h-[300vh] grow overflow-y-scroll">
                 <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
                     <div className="flex flex-col w-full items-start gap-[20px] absolute top-[228px] left-0">
-                        <NavigateTitle handleNavigate={handleNavigate} iconType="aptos" title="Account Aptos" />
+                        <NavigateTitle handleNavigate={handleNavigate} title="Account Aptos" />
                         <div className="flex flex-col gap-[24px] my-5 w-full ">
                             <InputWallet
                                 label="Wallet address"

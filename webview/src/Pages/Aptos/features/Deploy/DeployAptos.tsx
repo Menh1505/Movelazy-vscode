@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import axios from 'axios';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import FileUpload from "../../components/FileUpload";
-import NavigateTitle from '../../components/Header';
-import InputWallet from '../../components/InputWallet';
-import DeployButton from '../../components/DeployButton';
+import FileUpload from "../../../../components/Aptos/FileUpload";
+import NavigateTitle from '../../../../components/Aptos/Header';
+import InputWallet from '../../../../components/Aptos/InputWallet';
+import DeployButton from '../../../../components/Aptos/DeployButton';
 
 const DeployAptos = () => {
     //@ts-ignore
@@ -29,19 +29,15 @@ const DeployAptos = () => {
     const [selectedNetwork, setSelectedNetwork] = useState<string>('https://mevm.devnet.imola.movementlabs.xyz');
 
     const getTransactionHash = (response: string): string | null => {
-        // Tìm dòng chứa Transaction hash
         const lines = response.split('\n');
         for (const line of lines) {
             if (line.startsWith('Transaction hash:')) {
-                // Trả về giá trị sau dấu hai chấm
                 return line.split(': ')[1].trim();
             }
         }
         return null; // Nếu không tìm thấy Transaction hash
     };
 
-    const location = useLocation();
-    const page = location.state?.page;
     const handleNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedNetwork(e.target.value);
         console.log(e.target.value);
@@ -101,7 +97,7 @@ const DeployAptos = () => {
 
     const navigate = useNavigate();
     const handleNavigate = () => {
-        navigate(`/${page}`);
+        navigate(`/aptos`);
     };
 
     return (
@@ -109,10 +105,10 @@ const DeployAptos = () => {
             <div className="flex flex-wrap h-[300vh] grow overflow-y-scroll ">
                 <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
                     <div className="flex flex-col w-full items-start gap-[20px] absolute top-[228px] left-0">
-                        <NavigateTitle handleNavigate={handleNavigate} iconType="aptos" title="Deploy Aptos" />
+                        <NavigateTitle handleNavigate={handleNavigate} title="Deploy Aptos" />
                         <div className="flex flex-col gap-[24px] my-5 w-full ">
                             <div>
-                                <FileUpload file={file} setFile={setFile} page={page} setFileName={setFileName} />
+                                <FileUpload file={file} setFile={setFile} setFileName={setFileName} />
                             </div>
                             <div className=''>
                                 <InputWallet
